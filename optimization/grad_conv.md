@@ -31,7 +31,13 @@ mI\preceq \nabla^2f(c)\preceq MI,
 $$
 
 
-其中$$I$$是单位矩阵。注意这样一来Convex可以看做是0-strongly convex。Lipschitz smooth直觉理解就是没有折点（例如$$|x|$$在$$x=0$$处），Strong convexity直觉理解就是没有盆地（一片区域的函数值相等）。
+其中$$I$$是单位矩阵。注意这样一来Convex可以看做是0-strongly convex。Lipschitz smooth直觉理解就是没有折点（例如$$|x|$$在$$x=0$$处），Strong convexity直觉理解就是没有盆地（一片区域的函数值相等）。如果我们考虑最优值$$x^\star$$，对于强凸和smooth我们分别有
+
+
+$$
+2m\left\{f(x)-f(y)\right\}\leq\left\|\nabla f(x)\right\|^2\leq 2m\left\{f(x)-f(y)\right\}
+$$
+
 
 对于一族有监督统计学习模型$$\mathcal{M}_\theta$$（模型的参数为$$\theta\in\Theta$$），设输入样本-标签对$$(x, y)\in\mathcal{D}$$满足$$x\in\mathcal{X}, y\in\mathcal{Y}$$，模型的决策函数（泛函）为$$f_\theta:\mathcal{X}\rightarrow\mathcal{Y}$$在$$\mathcal{X}$$上连续。给定连续的损失函数$$l:\mathcal{Y}\times\mathcal{Y}\rightarrow\mathbb{R}$$，以及定义在$$\mathcal{D}$$上的概率度量$$P$$（密度函数为p），一个模型的好坏由期望损失给出：
 
@@ -70,11 +76,13 @@ $$
 
 由于任意一个样本$$(x, y)$$被采样出的概率为$$1/|D|$$，可以很简单地证明随机梯度的期望是经验梯度$$\mathbb{E}_{D_k}[l_{D_k}(\theta_k)]=l(\theta_k)$$。
 
+
+
 ## 收敛性分析
 
 ### Gradient Descent
 
-**结论**：_梯度下降在无Smooth假设时可能不收敛，有M-smooth假设时收敛。达到精度_$$\epsilon>0$$_，凸时收敛速度为_$$o(\frac{MR^2}{\epsilon})$$_，强凸时收敛速度为_$$o(\frac{M^3}{m^2\epsilon})$$。
+**结论**：_梯度下降在无Smooth假设时可能不收敛，有M-smooth假设时收敛。达到精度_$$\epsilon>0$$_，凸时收敛速度为_$$o(\frac{MR^2}{\epsilon})$$_，强凸时收敛速度为_$$o(\log_{1-m/M}\frac{\epsilon}{f(x_0)-f(x^\star)})$$。
 
 对$$l(\theta)$$没有任何假设的情况下，设$$\theta^\star$$使$$l(\theta)$$取得最小值，有：
 
@@ -132,7 +140,7 @@ $$
 $$
 
 
-从右边这个式子是$$\eta_k$$的二阶多项式能看出收敛速度大概是$$o(1/\sqrt{k})$$级别的。化简方式是两边除以$$\eta_k\eta_k+1$$，整理得
+化简方式是两边除以$$\eta_k\eta_k+1$$，整理得
 
 
 $$
@@ -147,9 +155,11 @@ $$
 
 
 $$
-l(\theta_k)-l(\theta^\star)=\eta_k\leq\frac{2MR^2}{k}
+l(\theta_k)-l(\theta^\star)=\eta_k\leq\frac{2MR^2}{k}=\frac{2MR^2}{k\eta_0}\eta_0,
 $$
 
+
+因此收敛速度是$$O(1/k)$$级别的次线性收敛。
 
 #### $$m$$-strongly convex情形
 
@@ -157,15 +167,15 @@ $$
 
 
 $$
-\|\nabla l(\theta_k)\| = \|\nabla l(\theta_k) - \nabla l(\theta^\star)\|\geq m \|\theta_k-\theta^\star\|\geq\frac{m}{M}\left(l(\theta_k)-l(\theta^\star)\right)
+\|\nabla l(\theta_k)\|^2 \geq 2m\left(l(\theta_k)-l(\theta^\star)\right)
 $$
-
 
 代入下界有
 
+$$
+l(\theta_k)-l(\theta^\star)=\eta_k\leq\left(1-\frac{m}{M}\right)^k\eta_0
+$$
 
-$$
-l(\theta_k)-l(\theta^\star)=\eta_k\leq\frac{2M^3}{m^2k}
-$$
+### Stochastic Gradient Descent
 
 
