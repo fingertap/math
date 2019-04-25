@@ -74,28 +74,98 @@ $$
 
 ### Gradient Descent
 
+**结论**：_梯度下降在无Smooth假设时可能不收敛，有M-smooth假设时收敛。达到精度_$$\epsilon>0$$_，凸时收敛速度为_$$o(\frac{MR^2}{\epsilon})$$_，强凸时收敛速度为_$$o(\frac{M^3}{m^2\epsilon})$$。
+
 对$$l(\theta)$$没有任何假设的情况下，设$$\theta^\star$$使$$l(\theta)$$取得最小值，有：
 
 
 $$
-\begin{align}
-l(\theta_{k+1})-l(\theta^\star) &= l(\theta_{k+1})-l(\theta_k)+l(\theta_k)-l(\theta^\star)\\
-&=\left\{l(\theta_k)-\alpha\nabla l(\theta_k)^T\nabla l(\theta_k)+\frac{\alpha^2}{2}\nabla l(\theta_k)^T\nabla^2 l(c)\nabla l(\theta_k)\right\}-l(\theta_k)+l(\theta_k)-l(\theta^\star),
-\end{align}
+l(\theta_{k+1})-l(\theta^\star) 
+=\left\{l(\theta_k)-\alpha\nabla l(\theta_k)^T\nabla l(\theta_k)+\frac{\alpha^2}{2}\nabla l(\theta_k)^T\nabla^2 l(c)\nabla l(\theta_k)\right\}-l(\theta^\star),
 $$
 
+
 这里$$c$$是$$\theta_k$$和$$\theta_{k+1}$$线段上一点。如果$$\nabla^2l(c)\rightarrow\infty$$，则$$\forall \alpha > 0, l(\theta_{k+1})-l(\theta^\star) >l(\theta_k)-l(\theta^\star)$$，因此第$$k$$步迭代并没有降低损失。我们可以构造一个函数，使得从某个起点$$\theta_0$$开始，每一步梯度下降都是发散的。因此我们需要限制$$\nabla^2l(\theta)\preceq MI$$，即$$l(\theta)$$是$$M$$-Lipschitz smooth的。代入smooth条件有
+
 
 $$
 l(\theta_{k+1})-l(\theta^\star)
 \leq\left\{\frac{\alpha^2M}{2}-\alpha\right\}\|\nabla l(\theta_k)\|^2+l(\theta_k)-l(\theta^\star),
 $$
 
+
 等式右侧对$$\alpha$$求最小，得$$\alpha=1/M$$时
+
 
 $$
 l(\theta_{k+1})-l(\theta^\star)
-\leq -\frac{1}{2M}\|\nabla l(\theta_k)\|^2+l(\theta_k)-l(\theta^\star).
+\leq -\frac{1}{2M}\left\|\nabla l(\theta_k)\right\|^2+l(\theta_k)-l(\theta^\star).
 $$
 
-因此当$$0<\alpha<2/M$$时，我们都有$$l(\theta_{k+1})-l(\theta^\star) < l(\theta_k)-l(\theta^\star)$$.
+
+因此当$$0 < \alpha < 2/M$$时，我们都有$$l(\theta_{k+1}) - l(\theta^\star) < l(\theta_k) - l(\theta^\star)$$。
+
+**要给出收敛速度需要对**$$\|\nabla l(\theta_k)\|$$**给出下界**。
+
+#### Convex情形
+
+
+$$
+\begin{align}
+&l(\theta^\star)\geq l(\theta_k)+\nabla l(\theta_k)^T(\theta^\star-\theta_k)\\
+\Leftrightarrow~~& l(\theta_k)-l(\theta^\star)\leq\left\|\nabla l(\theta_k)^T(\theta^\star-\theta_k)\right\|\\
+&~~~~~~~~~~~~~~~~~~~~~\leq\left\|\nabla l(\theta_k)\right\|\left\|\theta_k-\theta^\star\right\|\\
+&~~~~~~~~~~~~~~~~~~~~~\leq\left\|\nabla l(\theta_k)\right\|\left\|\theta_0-\theta^\star\right\|\\
+\Leftrightarrow~~&\|\nabla l(\theta_k)\|\geq\frac{l(\theta_k)-l(\theta^\star)}{\left\|\theta_0-\theta^\star\right\|}
+\end{align}
+$$
+
+
+记$$\eta_k=l(\theta_k)-l(\theta^\star)$$，并假设$$\|\theta_0-\theta^\star\|\leq R$$，有
+
+
+$$
+\begin{align}
+\eta_{k+1} &\leq \eta_k - \frac{1}{2M}\|\nabla l(\theta_k)\|^2\\
+&\leq\eta_k-\frac{\eta_k^2}{2MR^2}
+\end{align}
+$$
+
+
+从右边这个式子是$$\eta_k$$的二阶多项式能看出收敛速度大概是$$o(1/\sqrt{k})$$级别的。化简方式是两边除以$$\eta_k\eta_k+1$$，整理得
+
+
+$$
+\begin{align}
+&\frac{1}{\eta_{k+1}}-\frac{1}{\eta_k}\geq\frac{1}{2MR^2}\frac{\eta_k}{\eta_{k+1}}\geq\frac{1}{2MR^2}\\
+\Rightarrow~~&\sum_{i=0}^k\frac{1}{\eta_{i+1}}-\frac{1}{\eta_i}=\frac{1}{\eta_{k+1}}-\frac{1}{\eta_0}\geq\frac{k+1}{2MR^2},
+\end{align}
+$$
+
+
+即
+
+
+$$
+l(\theta_k)-l(\theta^\star)=\eta_k\leq\frac{2MR^2}{k}
+$$
+
+
+#### $$m$$-strongly convex情形
+
+根据强凸定义（参考Lipschitz smooth的几种定义相互的推导）：
+
+
+$$
+\|\nabla l(\theta_k)\| = \|\nabla l(\theta_k) - \nabla l(\theta^\star)\|\geq m \|\theta_k-\theta^\star\|\geq\frac{m}{M}\left(l(\theta_k)-l(\theta^\star)\right)
+$$
+
+
+代入下界有
+
+
+$$
+l(\theta_k)-l(\theta^\star)=\eta_k\leq\frac{2M^3}{m^2k}
+$$
+
+
