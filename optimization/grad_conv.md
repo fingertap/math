@@ -70,7 +70,7 @@ $$
 
 
 $$
-\nabla l_{D_k}(\theta_k) = \frac{1}{|D_k|}\sum_{(x, y)\in D_k}\frac{l(f_{\theta_k}(x), y)}{\partial \theta_k}.
+\nabla l_{D_k}(\theta_k) = \frac{1}{|D_k|}\sum_{(x, y)\in D_k}\frac{\partial l(f_{\theta_k}(x), y)}{\partial \theta_k}.
 $$
 
 
@@ -155,7 +155,7 @@ $$
 
 
 $$
-l(\theta_k)-l(\theta^\star)=\eta_k\leq\frac{2MR^2}{k}=\frac{2MR^2}{k\eta_0}\eta_0,
+l(\theta_k)-l(\theta^\star)=\eta_k\leq\frac{2MR^2}{k},
 $$
 
 
@@ -177,5 +177,4 @@ l(\theta_k)-l(\theta^\star)=\eta_k\leq\left(1-\frac{m}{M}\right)^k\eta_0
 $$
 
 ### Stochastic Gradient Descent
-
 
