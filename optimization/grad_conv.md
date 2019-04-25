@@ -15,8 +15,25 @@ $$
 $$
 f(x) \geq f(y) + (x-y)^T\nabla f(y).
 $$
+
 Lipschitz smooth和Strong convexity类似，是对$$\nabla^2f(c)$$引入了上下界。假设$$f(x)$$是$$M$$-Lipschitz smooth，以及$$m$$-strongly convex，有$$\forall c\in\mathbf{dom}f$$
 $$
 mI\preceq \nabla^2f(c)\preceq MI,
 $$
 其中$$I$$是单位矩阵。注意这样一来Convex可以看做是0-strongly convex。Lipschitz smooth直觉理解就是没有折点（例如$$|x|$$在$$x=0$$处），Strong convexity直觉理解就是没有盆地（一片区域的函数值相等）。
+
+对于一族有监督统计学习模型$$\mathcal{M}_\theta$$（模型的参数为$$\theta$$），设输入样本-标签对$$(x, y)\in\mathcal{D}$$满足$$x\in\mathcal{X}, y\in\mathcal{Y}$$，模型的决策函数（泛函）为$$f_\theta:\mathcal{X}\rightarrow\mathcal{Y}$$在$$\mathcal{X}$$上连续。给定连续的损失函数$$l:\mathcal{Y}\times\mathcal{Y}\rightarrow\mathbb{R}$$，以及定义在$$\mathcal{X}$$上的概率度量$$P$$（密度函数为p），一个模型的好坏由期望误差损失给出：
+$$
+L(M_\theta)\triangleq
+\mathbb{E}
+_{(x, y)\in\mathcal{D}}[l(f_\theta(x), y)]
+$$
+则梯度下降(GD)的更新策略：
+$$
+\theta_{k+1} = \theta_k - \alpha \nabla f(\theta_k)
+$$
+其中$$\nabla f(\theta_k)$$由经验
+## 收敛性分析
+
+### Gradient Descent
+
