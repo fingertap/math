@@ -14,10 +14,10 @@
 
 假设Lipschitz平滑常数为$$M$$，强凸常数为$$m$$，初始距离最优值距离$$\|x_0-x^\star\|\leq r$$，初始函数值差距$$f(x_0)-f(x^\star)\leq R$$，有以下结果：
 
-|Methods|Non-smooth|Smooth+Non-convex|Smooth+Convex|Smooth+Strong Convexity|
-|-------|----------|-----------------|-------------|-----------------------|
-|Gradient Descent|May Divergent|Converge to local optima|$$O(\frac{Mr^2}{K})$$|$$O(\log_{1-\frac{m}{M}}\frac{K}{R})$$|
-|Stochastic Gradient Descent|May Divergent|Almost surely converge to Critical points|$$O(\frac{Br}{K})$$|$$O()$$|
+| Methods | Non-smooth | Smooth+Non-convex | Smooth+Convex | Smooth+Strong Convexity |
+| --- | --- | --- | --- | --- |
+| Gradient Descent | May Divergent | Converge to local optima | $$O(\frac{Mr^2}{K})$$ | $$O\left((1-\frac{m}{M}\right)^KR)$$ |
+| Stochastic Gradient Descent | May Divergent | Almost surely converge to Critical points | $$O(\frac{Br}{\sqrt{K}})$$ | $$O(\frac{1}{K})$$ |
 
 对于一般非凸问题的收敛速度的界我们没有好的结果，因为这至少是NP难问题。而
 
