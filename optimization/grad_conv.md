@@ -19,7 +19,7 @@
 | Gradient Descent | May Divergent | Converge to local optima | $$O(\frac{Mr^2}{K})$$ | $$O\left((1-\frac{m}{M}\right)^KR)$$ |
 | Stochastic Gradient Descent | May Divergent | Almost surely converge to Critical points | $$O(\frac{Br}{\sqrt{K}})$$ | $$O(\frac{1}{K})$$ |
 
-对于一般非凸问题的收敛速度的界我们没有好的结果，因为这至少是NP难问题。而
+对于一般非凸问题的收敛速度的界我们没有好的结果，因为这至少是NP难问题。
 
 ---
 
