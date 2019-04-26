@@ -2,8 +2,26 @@
 
 这篇里记录一下梯度下降在一般条件下的收敛分析。关键的思想有  
 1. 利用泰勒公式+拉格朗日余项对函数做二阶展开。  
-2. 收敛$$\Leftrightarrow f$$是Lipschitz smooth。  
-3. 收敛速度关键在于对$$\|\nabla f(x)\|$$引入下界。
+2. Smooth和Convexity分别对梯度、海塞引入上下界。  
+3. 收敛$$\Leftrightarrow f$$是Lipschitz smooth（stochastic情形下也需要假设次梯度方差有界，这等于是说smooth，甚至比smooth更因为smoothness等价于梯度平方有上界）。  
+4. 收敛速度取决于$$\|\nabla f(x)\|$$的下界，即有多convex。
+
+注：用$$\|x-x^\star\|^2$$和$$f(x)-f(x^\star)$$来推导结果是一致的，前者用完全平方公式展开，后者用泰勒展开。
+
+---
+
+## 表格结果
+
+假设Lipschitz平滑常数为$$M$$，强凸常数为$$m$$，初始距离最优值距离$$\|x_0-x^\star\|\leq r$$，初始函数值差距$$f(x_0)-f(x^\star)\leq R$$，有以下结果：
+
+|Methods|Non-smooth|Smooth+Non-convex|Smooth+Convex|Smooth+Strong Convexity|
+|-------|----------|-----------------|-------------|-----------------------|
+|Gradient Descent|May Divergent|Converge to local optima|$$O(\frac{Mr^2}{K})$$|$$O(\log_{1-\frac{m}{M}}\frac{K}{R})$$|
+|Stochastic Gradient Descent|May Divergent|Almost surely converge to Critical points|$$O(\frac{Br}{K})$$|$$O()$$|
+
+对于一般非凸问题的收敛速度的界我们没有好的结果，因为这至少是NP难问题。而
+
+---
 
 ## 基础
 
@@ -15,7 +33,11 @@ f(x) = f(y) + (x-y)^T\nabla f(y) + (x-y)^T\nabla^2f(c)(x-y),
 $$
 
 
-其中$$c$$是$$x$$和$$y$$线段上一点。我们说他是**凸函数**，意味着$$\forall c\in\mathbf{dom}f, \nabla^2f(c)\succeq0$$，即$$\forall x, y\in \mathbf{dom}f$$
+其中$$c$$是$$x$$和$$y$$线段上一点。
+
+### Convexity、Strong Convexity、Lipschitz Smooth
+
+我们说他是**凸函数**，意味着$$\forall c\in\mathbf{dom}f, \nabla^2f(c)\succeq0$$，即$$\forall x, y\in \mathbf{dom}f$$
 
 
 $$
@@ -39,7 +61,9 @@ $$
 $$
 
 
-对于一族有监督统计学习模型$$\mathcal{M}_\theta$$（模型的参数为$$\theta\in\Theta$$），设输入样本-标签对$$(x, y)\in\mathcal{D}$$满足$$x\in\mathcal{X}, y\in\mathcal{Y}$$，模型的决策函数（泛函）为$$f_\theta:\mathcal{X}\rightarrow\mathcal{Y}$$在$$\mathcal{X}$$上连续。给定连续的损失函数$$l:\mathcal{Y}\times\mathcal{Y}\rightarrow\mathbb{R}$$，以及定义在$$\mathcal{D}$$上的概率度量$$P$$（密度函数为p），一个模型的好坏由期望损失给出：
+### Machine Learning Loss、Gradient Descent、Stochastic Gradient Descent
+
+对于一族有监督统计学习模型$$M_\theta$$（模型的参数为$$\theta\in\Theta$$），设输入样本-标签对$$(x, y)\in\mathcal{D}$$满足$$x\in\mathcal{X}, y\in\mathcal{Y}$$，模型的决策函数（泛函）为$$f_\theta:\mathcal{X}\rightarrow\mathcal{Y}$$在$$\mathcal{X}$$上连续。给定连续的损失函数$$l:\mathcal{Y}\times\mathcal{Y}\rightarrow\mathbb{R}$$，以及定义在$$\mathcal{D}$$上的概率度量$$P$$（密度函数为p），一个模型的好坏由期望损失给出：
 
 
 $$
@@ -74,9 +98,25 @@ $$
 $$
 
 
-由于任意一个样本$$(x, y)$$被采样出的概率为$$1/|D|$$，可以很简单地证明随机梯度的期望是经验梯度$$\mathbb{E}_{D_k}[l_{D_k}(\theta_k)]=l(\theta_k)$$。
+由于任意一个样本$$(x, y)$$的损失的期望都是$$L(M_\theta)$$，可以很简单地证明随机梯度和经验梯度的期望都是期望损失在$$\theta$$处的梯度。
+
+有时候随机梯度下降的随机性并不只是来自于对数据的采样，此时有可能使得随机梯度并不落在可行区域内（比如$$\theta_k=[0.1, 0.9]$$，而梯度为$$-0.2, 1.1$$，而我们希望$$\|\theta\|_\infty\leq 1$$），这时需要做一步正交投影操作，将更新后的$$\theta_{k+1}$$投影到可行区域$$\Theta$$内，方式是用最小二乘法在$$\Theta$$找一个距离$$\theta_{k+1}$$最近的点$$\tilde\theta_{k+1}$$，它满足$$\forall \theta\in \Theta, \|\theta-\theta_{k+1}\|\geq\|\theta-\tilde\theta_{k+1}\|$$。
+
+### Relationship between Gradient and Stochastic Gradient、Subgradient
+
+$$f$$在$$x$$处的次梯度（Subgradient）$$g_x\in\mathbb{R}^d$$是所有满足一阶条件的向量：$$\forall x, y\in \mathbb{R}^d,$$
 
 
+$$
+f(y)\geq f(x) + g_x^T(y-x),
+$$
+
+
+所有次梯度的集合叫做Subdifferential，记作$$\partial f(x)$$。当$$f$$在$$x$$处可导时，$$\partial f(x) = \{\nabla f(x)\}$$。
+
+我们称一个向量$$\tilde g_x$$为$$f$$在$$x$$处的带噪无偏次梯度（Noisy Unbiased Subgradient）若$$\mathbb{E}[\tilde g_x]=g_x\in\partial f(x)$$。**则随机梯度下降可以看做在梯度**$$\nabla l(\theta_k)$$**中引入一个零均值的加性噪声，而这个噪声为此次mini-batch的泛函，记作**$$v(D_k)$$。
+
+---
 
 ## 收敛性分析
 
@@ -170,11 +210,16 @@ $$
 \|\nabla l(\theta_k)\|^2 \geq 2m\left(l(\theta_k)-l(\theta^\star)\right)
 $$
 
+
 代入下界有
+
 
 $$
 l(\theta_k)-l(\theta^\star)=\eta_k\leq\left(1-\frac{m}{M}\right)^k\eta_0
 $$
 
+
 ### Stochastic Gradient Descent
+
+随机情形下
 
