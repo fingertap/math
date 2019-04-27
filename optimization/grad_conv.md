@@ -12,12 +12,12 @@
 
 ## 表格结果
 
-假设Lipschitz平滑常数为$M$，强凸常数为$m$，初始距离最优值距离$\|x_0-x^\star\|\leq r$，初始函数值差距$f(x_0)-f(x^\star)\leq R$，有以下结果：
+假设Lipschitz平滑常数为$M$，强凸常数为$m$，初始距离最优值距离$\|x_0-x^\star\|\leq r$，初始函数值差距$f(x_0)-f(x^\star)\leq R$，随机情形下假设$\mathbb{E}[\|\tilde g_{\theta}|\theta\|^2]$，有以下结果：
 
 | Methods | Non-smooth | Smooth+Non-convex | Smooth+Convex | Smooth+Strong Convexity |
 | --- | --- | --- | --- | --- |
-| Gradient Descent | May Divergent | Converge to local optima | $O(\frac{Mr^2}{K})$ | $O\left((1-\frac{m}{M}\right)^KR)$ |
-| Stochastic Gradient Descent | May Divergent | Almost surely converge to Critical points | $O(\frac{Br}{\sqrt{K}})$ | $O(\frac{1}{K})$ |
+| Gradient Descent | May Divergent | Converge to local optima | $O(\frac{Mr^2}{K})$ | $O\left(\left(1-\frac{m}{M}\right)^KR\right)$ |
+| Stochastic Gradient Descent | May Divergent | Almost surely converge to Critical points | $O(\frac{Br}{\sqrt{K}})$ | $O(\frac{B^2}{mK})$ |
 
 对于一般非凸问题的收敛速度的界我们没有好的结果，因为这至少是NP难问题。
 
@@ -136,7 +136,7 @@ $$
 $$
 \begin{align}
 &l(\theta^\star)\geq l(\theta_k)+\nabla l(\theta_k)^T(\theta^\star-\theta_k)\\
-\Leftrightarrow~~& l(\theta_k)-l(\theta^\star)\leq\left\|\nabla l(\theta_k)^T(\theta^\star-\theta_k)\right\|\\
+\Rightarrow~~& l(\theta_k)-l(\theta^\star)\leq\left\|\nabla l(\theta_k)^T(\theta^\star-\theta_k)\right\|\\
 &~~~~~~~~~~~~~~~~~~~~~\leq\left\|\nabla l(\theta_k)\right\|\left\|\theta_k-\theta^\star\right\|\\
 &~~~~~~~~~~~~~~~~~~~~~\leq\left\|\nabla l(\theta_k)\right\|\left\|\theta_0-\theta^\star\right\|\\
 \Leftrightarrow~~&\|\nabla l(\theta_k)\|\geq\frac{l(\theta_k)-l(\theta^\star)}{\left\|\theta_0-\theta^\star\right\|}
@@ -185,5 +185,95 @@ $$
 
 ### Stochastic Gradient Descent
 
-随机情形下
+随机情形下，假设$l(\theta)$为凸，记$\theta$处的带噪次梯度为$\tilde g_{\theta}$，并且$\exists B>0, \forall \theta\in\Theta, \mathbb{E}[\left\|\tilde g_\theta\right\|^2|\theta]\leq B^2$，且假设参数空间有界，即$\forall \theta \in \Theta, \|\theta\|\leq r$。考虑一般的随机梯度下降，即更新后可能落在可行域外，通过投影得到新的参数估计：
 
+$$
+\theta_{k+1} = Proj_\Theta(\theta_k-\alpha \tilde g_{\theta_k})，
+$$
+
+因为投影后的向量距离$\Theta$中的任意向量更近，有
+
+$$
+\begin{align}
+\|\theta_{k+1}-\theta^\star\|^2 &\leq \|\theta_k-\alpha\tilde g_{\theta_k} -\theta^\star\|^2 \\
+&=\|\theta_k-\theta^\star\|^2 + \alpha^2\|\tilde g_{\theta_k}\|^2-2\alpha\tilde g_{\theta_k}^T(\theta_k-\theta^\star)
+\end{align}
+$$
+
+注意到这个式子中有两个随机变量$\theta_k$和$\tilde g_{\theta_k}$，后者依赖前者。因此我们这里对$\tilde g_{\theta_k}$在给定$\theta_k$的情况下求期望：
+
+$$
+\begin{align}
+\mathbb{E}_{\tilde g_{\theta_k}}[\|\theta_{k+1}-\theta^\star\|^2|\theta_k] &\leq \|\theta_k-\theta^\star\|^2+ \alpha^2\mathbb{E}[\|\tilde g_{\theta_k}\|^2|\theta_k] - 2\alpha (\theta_k-\theta^\star)^T g_{\theta_k}\\
+&\leq \|\theta_k-\theta^\star\|^2+ \alpha^2B^2 - 2\alpha (\theta_k-\theta^\star)^T g_{\theta_k}\\
+\end{align}
+$$
+
+#### Convex情形
+
+利用函数的凸性，有
+
+$$
+\mathbb{E}_{\tilde g_{\theta_k}}[\|\theta_{k+1}-\theta^\star\|^2|\theta_k] \leq \|\theta_k-\theta^\star\|^2+ \alpha^2B^2 - 2\alpha \{l(\theta_k)-l(\theta^\star)\}
+$$
+
+再对$\theta_k$求期望，则之后所有的期望都是对$\tilde g_{\theta_k}$和$\theta_k$求的联合期望，因此下标之后省略。记$\gamma_k = \mathbb{E}[\|\theta_{k}-\theta^\star\|^2]$，整理有
+
+$$
+\begin{align}
+& \mathbb{E}[l(\theta_k)] - l(\theta^\star) \leq \frac{1}{2\alpha} (\gamma_k-\gamma_{k+1}) + \frac{\alpha B^2}{2}\\
+\Rightarrow~~& \sum_{i=0}^k\left\{\mathbb{E}[l(\theta_k)]-l(\theta^\star)\right\} \leq \frac{1}{2\alpha}(\gamma_0-\gamma_{k+1}) + \frac{(k+1)\alpha B^2}{2}\\
+&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\leq \frac{r^2}{2\alpha} + \frac{(k+1)\alpha B^2}{2}
+\end{align}
+$$
+
+利用$\min$函数的凹性，并记$k$次迭代中最好的参数为$\theta_{best}$
+
+$$
+\begin{align}
+\sum_{i=0}^k\left\{\mathbb{E}[l(\theta_k)]-l(\theta^\star)\right\} &\geq (k+1)\left\{\min_{i=0,\dots,k}\mathbb{E}[l(\theta_i)]-l(\theta^\star)\right\} \\
+&\geq (k+1)\left\{\mathbb{E}[\min_{i=0,\dots,k}l(\theta_i)] - l(\theta^\star)\right\} \\
+& = (k+1)\left\{\mathbb{E}[l(\theta_{best})]-l(\theta^\star)\right\}
+\end{align}
+$$
+
+最后不等式右边对$\alpha$求最小，整理得
+
+$$
+\mathbb{E}[l(\theta_{best})] - l(\theta^\star) \leq \frac{Br}{\sqrt{k}}
+$$
+
+#### Strong Convex情形
+
+强凸情形下用常数步长$\alpha$先把$k$个式子加起来再取最优的$\alpha^\star$并不能达到最优的收敛界。为了使得上界更紧，我们允许步长可变，即每一步有一个步长$\alpha_k$，然后对每个式子都取一个精心构造的步长，最后达到$O(1/K)$的收敛。利用强凸有
+
+$$
+\mathbb{E}_{\tilde g_{\theta_k}}[\|\theta_{k+1}-\theta^\star\|^2]\leq(1-\alpha_k m)\|\theta_k-\theta^\star\|^2 + \alpha_k^2B^2-2\alpha\{l(\theta_k)-l(\theta^\star)\}
+$$
+
+我们这里不能对$\alpha_k$直接取最优，因为最优值依赖于$\|\theta_k-\theta^\star\|^2$，而我们不知道$\theta^\star$的具体值。这里**非常精妙**地构造了一个步长$\alpha_k=1/km$，我还没弄懂怎么想到这样取的。Anyway，代入步长，对$\theta_k$求期望并记$\gamma_k=\mathbb{E}[\|\theta_k-\theta^\star\|^2],\eta_k=\mathbb{E}[l(\theta_k)-l(\theta^\star)]$有
+
+$$
+\begin{align}
+\eta_k \leq \frac{B^2}{2km} + \frac{(k-1)m\gamma_k}{2} - \frac{km\gamma_{k+1}}{2}
+\end{align}
+$$
+
+注意到右边最后两项可以被telescope消掉。两边乘以$k$并取telescope sum有
+
+$$
+\begin{align}
+&k\cdot\eta_k \leq \frac{B^2}{2m} + \frac{k(k-1)m\gamma_k}{2}-\frac{k^2m\gamma_{k+1}}{2}\\
+&~~~~~~~~~\leq\frac{B^2}{2m}+\frac{k(k-1)m\gamma_k}{2}-\frac{(k+1)km\gamma_{k+1}}{2}\\
+\Rightarrow~~&\sum_{i=1}^{k}i\cdot\eta_i \leq \frac{B^2k}{2m}+ 0 -\frac{(k+1)km\gamma_{k+1}}{2}
+\end{align}
+$$
+
+再利用之前的技巧$\eta_i\geq\min_{j=1,\dots,k}\mathbb{E}[l(\theta_j)]-l(\theta^\star)\geq\mathbb{E}[l(\theta_{best})]-l(\theta^\star)$，有
+
+$$
+\begin{align}
+&\frac{(k+1)k}{2}\cdot\left\{\mathbb{E}[l(\theta_{best})]-l(\theta^\star)\right\} \leq \frac{B^2k}{2m}-\frac{(k+1)km\gamma_{k+1}}{2}\\
+\Leftrightarrow~~&\mathbb{E}[l(\theta_{best})]-l(\theta^\star)\leq \frac{B^2}{mk}
+\end{align}
+$$
