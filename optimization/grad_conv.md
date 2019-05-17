@@ -158,7 +158,7 @@ $$
 \end{align}
 $$
 
-化简方式是两边除以$\eta_k\eta_k+1$，整理得
+化简方式是两边除以$\eta_k\eta_{k+1}$，整理得
 
 $$
 \begin{align}
