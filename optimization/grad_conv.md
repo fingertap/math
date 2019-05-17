@@ -8,6 +8,8 @@
 
 注：用$\|x-x^\star\|^2$和$f(x)-f(x^\star)$来推导结果是一致的，前者用完全平方公式展开，后者用泰勒展开。
 
+关于大部分优化算法的一个简单总结可以看[这篇博客](http://ruder.io/optimizing-gradient-descent/index.html)。
+
 ---
 
 ## 表格结果
@@ -15,11 +17,12 @@
 假设Lipschitz平滑常数为$M$，强凸常数为$m$，初始距离最优值距离$\|x_0-x^\star\|\leq r$，初始函数值差距$f(x_0)-f(x^\star)\leq R$，随机情形下假设$\mathbb{E}[\|\tilde g_{\theta}|\theta\|^2]$，有以下结果：
 
 | Methods | Non-smooth | Smooth+Non-convex | Smooth+Convex | Smooth+Strong Convexity |
-| --- | --- | --- | --- | --- |
+| :---: | :---: | :---: | :---: | :---: |
 | Gradient Descent | May Divergent | Converge to local optima | $O(\frac{Mr^2}{K})$ | $O\left(\left(1-\frac{m}{M}\right)^KR\right)$ |
 | Stochastic Gradient Descent | May Divergent | Almost surely converge to Critical points | $O(\frac{Br}{\sqrt{K}})$ | $O(\frac{B^2}{mK})$ |
 
-对于一般非凸问题的收敛速度的界我们没有好的结果，因为这至少是NP难问题。
+
+对于一般非凸非光滑问题的收敛速度的界我们没有好的结果，因为这至少是NP难问题。
 
 ---
 
