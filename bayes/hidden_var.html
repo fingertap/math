@@ -1,0 +1,469 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>隐变量，EM算法，变分方法，VAE · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../ce/" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../optimization/">
+            
+                <a href="../optimization/">
+            
+                    
+                    优化
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../optimization/grad_conv.html">
+            
+                <a href="../optimization/grad_conv.html">
+            
+                    
+                    Gradient Descent Convergence Analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    贝叶斯
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.3.1" data-path="hidden_var.html">
+            
+                <a href="hidden_var.html">
+            
+                    
+                    隐变量，EM算法，变分方法，VAE
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../ce/">
+            
+                <a href="../ce/">
+            
+                    
+                    聚集不等式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../ce/markov.html">
+            
+                <a href="../ce/markov.html">
+            
+                    
+                    Markov, Chebyshev and Chernoff
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../ce/sub_gauss_gamma.html">
+            
+                <a href="../ce/sub_gauss_gamma.html">
+            
+                    
+                    Sub-Gaussian and Sub-Gamma
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >隐变量，EM算法，变分方法，VAE</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x9690;&#x53D8;&#x91CF;&#xFF0C;em&#x7B97;&#x6CD5;&#xFF0C;&#x53D8;&#x5206;em&#xFF0C;vae">&#x9690;&#x53D8;&#x91CF;&#xFF0C;EM&#x7B97;&#x6CD5;&#xFF0C;&#x53D8;&#x5206;EM&#xFF0C;VAE</h1>
+<p>&#x6700;&#x5927;&#x4F3C;&#x7136;&#x6846;&#x67B6;&#x4E0B;&#xFF0C;&#x5047;&#x8BBE;&#x89C2;&#x6D4B;&#x53D8;&#x91CF;&#x6709;&#x7F3A;&#x5931;&#x6216;&#x4E0D;&#x53EF;&#x89C2;&#x6D4B;&#x7684;&#x5C5E;&#x6027;&#x65F6;&#xFF0C;&#x8981;&#x7528;&#x5230;&#x53D8;&#x5206;&#x7684;&#x65B9;&#x6CD5;&#x3002;&#x9690;&#x53D8;&#x91CF;&#x6A21;&#x578B;&#x5F80;&#x5F80;&#x662F;&#x65E0;&#x76D1;&#x7763;&#x6216;&#x8005;&#x5C11;&#x76D1;&#x7763;&#x6A21;&#x578B;&#xFF0C;&#x56E0;&#x4E3A;&#x76D1;&#x7763;&#x4FE1;&#x606F;&#x53EF;&#x4EE5;&#x770B;&#x505A;&#x662F;&#x5305;&#x542B;&#x5728;&#x7F3A;&#x5931;&#x7684;&#x9690;&#x53D8;&#x91CF;&#x4E2D;&#x7684;&#x4E00;&#x90E8;&#x5206;&#x3002;</p>
+<p>&#x6CE8;&#x610F;&#xFF1A;</p>
+<ol>
+<li>&#x7F3A;&#x5931;&#x89C2;&#x6D4B;&#x548C;&#x6837;&#x672C;&#x4E00;&#x4E00;&#x5BF9;&#x5E94;&#xFF0C;&#x800C;&#x53C2;&#x6570;&#x5219;&#x662F;&#x6240;&#x6709;&#x6837;&#x672C;&#x5171;&#x4EAB;&#x7684;&#x3002;</li>
+<li>&#x4F3C;&#x7136;&#x4E0B;&#x754C;&#x7684;&#x8F93;&#x5165;&#x662F;&#x53C2;&#x6570;&#x548C;&#x53D8;&#x5206;&#x5206;&#x5E03;&#xFF0C;&#x68AF;&#x5EA6;&#x56DE;&#x5E26;&#x5230;&#x53C2;&#x6570;&#x548C;&#x5206;&#x5E03;&#x4E0A;&#x3002;</li>
+<li>&#x4E0D;&#x53EF;&#x5904;&#x7406;&#xFF08;intractable&#xFF09;&#x7684;&#x5206;&#x5E03;&#x5B9A;&#x4E49;&#x4E3A;&#x65E0;&#x6CD5;&#x8BA1;&#x7B97;&#xFF0C;&#x4E14;&#x65E0;&#x6CD5;&#x6C42;&#x5BFC;&#x3002;</li>
+</ol>
+<p>&#x5047;&#x8BBE;&#x8F93;&#x5165;<script type="math/tex; ">(x, z)\in\mathcal{D}=\mathcal{X}\times\mathcal{Z}</script>&#x4E2D;<script type="math/tex; ">\mathcal{Z}</script>&#x7A7A;&#x95F4;&#x662F;&#x65E0;&#x6CD5;&#x89C2;&#x6D4B;&#x5230;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x7684;&#x76EE;&#x6807;&#x5C31;&#x53D8;&#x4E3A;&#x4E86;&#x6700;&#x5927;&#x5316;&#x5BF9;&#x6570;&#x8FB9;&#x7F18;&#x4F3C;&#x7136;</p>
+<p><script type="math/tex; mode=display">
+\tag{1}
+\max_{\theta\in\Theta}\log\mathcal{L}(\theta;\mathbf{X})=\sum_{x\in\mathbf{X}}\log p_\theta(x)=\sum_{x\in\mathbf{X}}\log\sum_{z\in\mathcal{Z}}p_{\theta}(x, z),
+</script></p>
+<p>&#x5176;&#x4E2D;<script type="math/tex; ">\mathbf{X}\subset\mathcal{X}</script>&#x662F;&#x89C2;&#x6D4B;&#x5230;&#x7684;&#x6570;&#x636E;&#x96C6;&#x3002;</p>
+<h2 id="em&#x7B97;&#x6CD5;">EM&#x7B97;&#x6CD5;</h2>
+<p>&#x76F4;&#x63A5;&#x5728;&#x5F0F;&#x5B50;<script type="math/tex; ">(1)</script>&#x4E2D;&#x5BF9;<script type="math/tex; ">\theta</script>&#x6C42;&#x5BFC;&#x662F;&#x4E0D;&#x597D;&#x8BA1;&#x7B97;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;<script type="math/tex; ">\log</script>&#x4E2D;&#x6709;&#x6C42;&#x548C;&#x3002;EM&#x7B97;&#x6CD5;&#x7684;&#x601D;&#x8DEF;&#x662F;&#x4F18;&#x5316;<script type="math/tex; ">(1)</script>&#x7684;&#x4E0B;&#x754C;&#xFF0C;<strong>&#x5176;&#x6838;&#x5FC3;&#x5047;&#x8BBE;&#x662F;<script type="math/tex; ">p_\theta(x, z)</script>&#x662F;&#x5F88;&#x597D;&#x5904;&#x7406;&#x7684;</strong>&#x3002;&#x5229;&#x7528;<script type="math/tex; ">\log</script>&#x51FD;&#x6570;&#x7684;&#x51F9;&#x6027;&#x548C;Jensen&#x4E0D;&#x7B49;&#x5F0F;&#xFF1A;</p>
+<p><script type="math/tex; mode=display">
+\tag{2}
+\log\sum_{z\in\mathcal{Z}}p_{\theta}(x, z) = \log\sum_{z\in\mathcal{Z}}\frac{p_{\theta}(x, z)}{q(z)}q(z) \geq \sum_{z\in\mathcal{Z}}q(z)\left\{\log p_\theta(x, z)-\log q(z)\right\},
+</script></p>
+<p>&#x5176;&#x4E2D;<script type="math/tex; ">q(z)</script>&#x662F;&#x4EFB;&#x610F;&#x5B9A;&#x4E49;&#x5728;<script type="math/tex; ">\mathcal{Z}</script>&#x4E0A;&#x7684;&#x6982;&#x7387;&#x5BC6;&#x5EA6;&#x51FD;&#x6570;&#xFF0C;&#x4E14;<script type="math/tex; ">\forall z \in \mathcal{Z} q(z) > 0</script>&#x3002;&#x56E0;&#x6B64;&#x4E4B;&#x540E;&#x4F18;&#x5316;&#x4E0B;&#x754C;</p>
+<p><script type="math/tex; mode=display">
+\max_\theta\hat{\mathcal{L}}(q, \theta;\mathbf{X})=\sum_{x\in\mathcal{X}}\sum_{z\in\mathcal{Z}}q(z)\left\{\log p_\theta(x, z)-\log q(z)\right\}.
+</script></p>
+<p>&#x8FD9;&#x4E2A;&#x4E0B;&#x754C;&#x662F;&#x4E00;&#x4E2A;&#x53CC;&#x53D8;&#x91CF;&#x7684;&#x6CDB;&#x51FD;&#xFF0C;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x662F;&#x6982;&#x7387;&#x5BC6;&#x5EA6;<script type="math/tex; ">q</script>&#xFF0C;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x662F;&#x53C2;&#x6570;<script type="math/tex; ">\theta</script>&#x3002;&#x91C7;&#x7528;&#x5750;&#x6807;&#x68AF;&#x5EA6;&#x6CD5;&#xFF0C;&#x4EA4;&#x66FF;&#x5BFB;&#x627E;&#x5F53;&#x524D;&#x6700;&#x4F18;&#x7684;<script type="math/tex; ">q</script>&#x548C;<script type="math/tex; ">\theta</script>&#x5373;&#x4E3A;EM&#x7B97;&#x6CD5;&#x3002;&#x5BF9;<script type="math/tex; ">q</script>&#x53D6;&#x6700;&#x5927;&#x8981;&#x6C42;<script type="math/tex; ">(2)</script>&#x5F0F;&#x4E2D;&#x7B49;&#x53F7;&#x6210;&#x7ACB;&#xFF0C;&#x5373;&#x8981;&#x6C42;<script type="math/tex; ">\forall z \in \mathcal{Z}, p_\theta(x, z)/q(z)=C</script>&#xFF0C;<script type="math/tex; ">C</script>&#x4E3A;&#x67D0;&#x4E00;&#x5E38;&#x6570;&#xFF0C;&#x7B80;&#x5355;&#x8BA1;&#x7B97;&#x4E00;&#x4E0B;&#x80FD;&#x5F97;&#x5230;<script type="math/tex; ">C = p_\theta(x|z)</script>&#xFF0C;&#x800C;</p>
+<p><script type="math/tex; mode=display">
+\tag{E step}
+q^\star(z)=p_{\theta}(z|x)
+</script></p>
+<p>&#x800C;&#x6211;&#x4EEC;&#x5728;M&#x6B65;&#x65F6;&#x5F80;&#x5F80;&#x4F1A;&#x9047;&#x5230;<script type="math/tex; ">\sum_zq(z)\cdot z</script>&#x8FD9;&#x6837;&#x7684;<script type="math/tex; ">z</script>&#x7684;&#x671F;&#x671B;&#x5F62;&#x5F0F;&#xFF0C;&#x56E0;&#x6B64;&#x5728;&#x5B9E;&#x9645;&#x5B9E;&#x73B0;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x5F80;&#x5F80;&#x5728;&#x5185;&#x5B58;&#x91CC;&#x8BB0;&#x5F55;&#x9690;&#x53D8;&#x91CF;&#x7684;&#x671F;&#x671B;</p>
+<p><script type="math/tex; mode=display">
+\tag{E step in practice}
+\mathbb{E}[z] = \sum_{z\in\mathcal{Z}}p_\theta(z|x)\cdot z
+</script></p>
+<p>&#x8FD9;&#x4E5F;&#x662F;E&#x6B65;&#x540D;&#x5B57;&#x7684;&#x7531;&#x6765;&#x3002;M&#x6B65;&#x5F97;&#x540D;&#x539F;&#x56E0;&#x662F;&#x6211;&#x4EEC;&#x5728;&#x8FD9;&#x4E00;&#x6B65;&#x91CC;&#x5BF9;<script type="math/tex; ">\theta</script>&#x6C42;&#x4E86;&#x6700;&#x5927;&#xFF0C;&#x6CE8;&#x610F;&#x8FD9;&#x4E2A;&#x4E0B;&#x754C;&#x5F80;&#x5F80;&#x662F;&#x51F9;&#x7684;&#xFF08;&#x5927;&#x90E8;&#x5206;&#x6A21;&#x578B;&#x662F;&#x5BF9;&#x6570;&#x51F9;&#x7684;&#xFF0C;&#x6BD4;&#x5982;GMM&#x4E2D;&#x7684;&#x9AD8;&#x65AF;&#x5206;&#x5E03;&#x7B49;&#x6307;&#x6570;&#x65CF;&#x5206;&#x5E03;&#xFF09;&#xFF0C;&#x56E0;&#x6B64;&#x66F4;&#x65B0;&#x7684;&#x65B9;&#x5F0F;&#x4E3A;</p>
+<p><script type="math/tex; mode=display">
+\tag{M step}
+\theta^{new} = \arg\max_\theta\sum_{z\in\mathcal{Z}}p_{\theta^{old}}(z|x)\log p_\theta(x, z)
+</script></p>
+<p>&#x8868;&#x793A;&#x6210;&#x6982;&#x7387;&#x56FE;&#x662F;&#x8FD9;&#x6837;&#xFF1A;</p>
+<div style="width:100%;text-align:center">
+    <img src="assets/EM_pgm.jpg" alt="PGM for EM algorithm" style="margin:0 auto" width="600/">
+</div>
+
+<h2 id="&#x53D8;&#x5206;em">&#x53D8;&#x5206;EM</h2>
+<p>&#x53D8;&#x5206;EM&#x662F;&#x4E3A;&#x4E86;&#x5904;&#x7406;&#x5168;&#x8D1D;&#x53F6;&#x65AF;&#x60C5;&#x5F62;&#x4E0B;&#x5BF9;&#x53C2;&#x6570;&#x3001;&#x9690;&#x53D8;&#x91CF;&#x7684;&#x591A;&#x91CD;&#x79EF;&#x5206;&#x4E0D;&#x53EF;&#x6C42;&#x7684;&#x95EE;&#x9898;&#x800C;&#x53D1;&#x660E;&#x7684;&#x3002;&#x53D8;&#x5206;&#xFF08;variational&#xFF09;&#x610F;&#x5473;&#x7740;&#x6211;&#x4EEC;&#x8981;&#x8FD1;&#x4F3C;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#xFF0C;&#x5728;&#x4E00;&#x65CF;&#x51FD;&#x6570;&#x4E2D;&#x627E;&#x4E00;&#x4E2A;&#x6700;&#x80FD;&#x8FD1;&#x4F3C;&#x76EE;&#x6807;&#x7684;&#x3002;EM&#x7B97;&#x6CD5;&#x4E2D;&#x7684;<script type="math/tex; ">q(z)</script>&#x5373;&#x4E3A;&#x4E00;&#x4E2A;&#x53D8;&#x5206;&#x5206;&#x5E03;&#xFF0C;&#x7528;&#x4EE5;&#x8FD1;&#x4F3C;&#x771F;&#x5B9E;&#x7684;&#x9690;&#x53D8;&#x91CF;&#x540E;&#x9A8C;&#x5206;&#x5E03;<script type="math/tex; ">p_\theta(z|x)</script>&#xFF0C;&#x800C;&#x53D8;&#x5206;EM&#x751A;&#x81F3;&#x9700;&#x8981;&#x5BF9;<script type="math/tex; ">q(z)</script>&#x505A;&#x8FDB;&#x4E00;&#x6B65;&#x7684;&#x8FD1;&#x4F3C;&#x3002;</p>
+<p>EM&#x7B97;&#x6CD5;&#x5047;&#x8BBE;&#x6211;&#x4EEC;&#x6709;&#x53C2;&#x6570;<script type="math/tex; ">\theta</script>&#x548C;&#x9690;&#x53D8;&#x91CF;<script type="math/tex; ">z</script>&#x8981;&#x4F30;&#x8BA1;&#x3002;&#x7279;&#x522B;&#x5730;&#xFF0C;&#x5BF9;&#x4E8E;&#x53C2;&#x6570;<script type="math/tex; ">\theta</script>&#x6211;&#x4EEC;&#x505A;&#x7684;&#x662F;&#x70B9;&#x4F30;&#x8BA1;&#xFF0C;&#x662F;&#x6700;&#x5927;&#x4F3C;&#x7136;&#x6216;&#x8005;&#x6700;&#x5927;&#x540E;&#x9A8C;&#x63A8;&#x65AD;&#x3002;&#x4F46;&#x662F;&#x5728;&#x5168;&#x8D1D;&#x53F6;&#x65AF;&#x65B9;&#x6CD5;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x5BF9;<script type="math/tex; ">\theta</script>&#x4E5F;&#x4F1A;&#x5F15;&#x5165;&#x5148;&#x9A8C;&#x5206;&#x5E03;<script type="math/tex; ">p(\theta|\alpha)</script>&#xFF0C;&#x5E76;&#x79EF;&#x5206;&#x6389;<script type="math/tex; ">\theta</script>&#xFF08;<script type="math/tex; ">\alpha</script>&#x662F;&#x8D85;&#x53C2;&#xFF09;&#x3002;&#x4E5F;&#x5373;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x7684;&#x76EE;&#x6807;&#x662F;</p>
+<p><script type="math/tex; mode=display">
+\max_\alpha \int p(x|\theta)p(\theta|\alpha) d\theta=\int\int p(x, z|\theta)p(\theta|\alpha)d\theta dz
+</script></p>
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x628A;<script type="math/tex; ">\theta</script>&#x5438;&#x6536;&#x5230;<script type="math/tex; ">z</script>&#x4E2D;&#xFF0C;&#x5F62;&#x5F0F;&#x4E0A;&#x5176;&#x5B9E;&#x548C;<script type="math/tex; ">(2)</script>&#x4E00;&#x81F4;&#x3002;&#x5373;&#x4FBF;&#x6211;&#x4EEC;&#x7528;&#x4E00;&#x4E2A;&#x53D8;&#x5206;&#x5206;&#x5E03;<script type="math/tex; ">q(z, \theta)</script>&#x6765;&#x8FD1;&#x4F3C;<script type="math/tex; ">p_\alpha(z, \theta|x)</script>&#xFF0C;&#x5728;EM&#x7B97;&#x6CD5;&#x4E2D;&#x5F80;&#x5F80;&#x4E5F;&#x4F1A;&#x6D89;&#x53CA;&#x5230;intractable&#x7684;&#x79EF;&#x5206;&#x3002;&#x4E00;&#x4E2A;&#x601D;&#x8DEF;&#x662F;&#x91C7;&#x6837;&#x8FD9;&#x6837;&#x7684;&#x79EF;&#x5206;&#xFF0C;&#x7528;MCMC&#x65B9;&#x6CD5;&#x7684;&#x601D;&#x8DEF;&#xFF0C;&#x8FD9;&#x6837;&#x505A;&#x7684;&#x7F3A;&#x70B9;&#x662F;&#x5BF9;&#x6BCF;&#x4E2A;&#x6837;&#x672C;&#x90FD;&#x8981;&#x505A;&#x4E00;&#x6B21;&#x91C7;&#x6837;&#xFF0C;&#x5BF9;&#x4E8E;&#x5927;&#x6570;&#x636E;&#x96C6;&#x8BA1;&#x7B97;&#x5F00;&#x9500;&#x76F8;&#x5F53;&#x5927;&#x3002;&#x53E6;&#x4E00;&#x79CD;&#x65B9;&#x6CD5;&#x662F;&#x89E3;&#x8026;&#x5408;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x5206;&#x7EC4;&#x7684;&#x9690;&#x53D8;&#x91CF;&#x3002;</p>
+<p>&#x6211;&#x4EEC;&#x5047;&#x8BBE;<script type="math/tex; ">q(z, \theta) = q(z)q(\theta)</script>&#xFF0C;&#x6216;&#x8005;&#x66F4;&#x4E00;&#x822C;&#x5730;&#xFF0C;&#x5047;&#x8BBE;<script type="math/tex; ">q(z) = \prod_i q_i(z_i)</script>&#xFF0C;&#x5373;&#x6BCF;&#x7EC4;&#x9690;&#x53D8;&#x91CF;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x53D8;&#x5206;&#x5206;&#x5E03;&#x4E14;&#x76F8;&#x4E92;&#x72EC;&#x7ACB;&#x3002;&#x5047;&#x8BBE;&#x8FD9;&#x6837;&#x5206;&#x89E3;&#x4EE5;&#x540E;&#xFF0C;&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x9690;&#x53D8;&#x91CF;&#x7EC4;<script type="math/tex; ">q_i(z_i)</script>&#x90FD;&#x662F;tractable&#x7684;&#xFF0C;&#x8BB0;<script type="math/tex; ">q_i=q_i(z_i)</script>&#xFF0C;&#x5355;&#x72EC;&#x63D0;&#x53D6;&#x51FA;<script type="math/tex; ">z_j</script>&#x89C2;&#x5BDF;&#x4E0B;&#x754C;<script type="math/tex; ">\hat{\mathcal{L}}</script>&#x6709;</p>
+<p><script type="math/tex; mode=display">
+\begin{align}
+\hat{\mathcal{L}(q)} &= \int \prod_i q_i \left\{\log p(x, z)-\sum_i\log q_i\right\}dz \\
+&=\int \prod_i q_i\log p(x, z)dz-\int\prod_iq_i\sum_{i'}\log q_{i'} dz \\
+&=\int q_j\left\{\int\log p(x, z)\prod_{i\neq j}q_i dz_i \right\}dz_j - \int \prod_{i} q_i\log q_jdz + \int \prod_i q_i\sum_{i'\neq j}\log q_{i'} dz\\
+&= \int q_j \mathbb{E}_{i\neq j}[\log p(x, z)]dz_j - \int q_j\log q_jdz_j + const
+\end{align}
+</script></p>
+<p>&#x628A;&#x53F3;&#x4FA7;&#x770B;&#x505A;&#x4E00;&#x4E2A;KL&#x6563;&#x5EA6;&#xFF0C;&#x6700;&#x4F18;&#x7684;<script type="math/tex; ">q_j</script>&#x6EE1;&#x8DB3;</p>
+<p><script type="math/tex; mode=display">
+\tag{Variational EM}
+\log q_j^\star(z_j) = \mathbb{E}_{i\neq j}[\log p(x, z)]
+</script></p>
+<p>&#x6CE8;&#x610F;&#x5230;&#x66F4;&#x65B0;<script type="math/tex; ">z_j</script>&#x7684;&#x5206;&#x5E03;&#x9700;&#x8981;&#x7528;&#x5230;<script type="math/tex; ">i\neq j</script>&#x7684;&#x6240;&#x6709;&#x5206;&#x5E03;&#x6765;&#x7B97;<script type="math/tex; ">p(x, z)</script>&#xFF0C;&#x56E0;&#x6B64;&#x4E0D;&#x540C;&#x7684;&#x9690;&#x53D8;&#x91CF;&#x7EC4;&#x7684;&#x66F4;&#x65B0;&#x662F;&#x76F8;&#x4E92;&#x4F9D;&#x8D56;&#x7684;&#x3002;&#x53D8;&#x5206;EM&#x8FED;&#x4EE3;&#x5730;&#x56FA;&#x5B9A;<script type="math/tex; ">i\neq j</script>&#x6765;&#x66F4;&#x65B0;&#x67D0;&#x4E2A;&#x9690;&#x53D8;&#x91CF;<script type="math/tex; ">z_j</script>&#xFF0C;&#x76F4;&#x81F3;&#x6240;&#x6709;&#x7684;&#x9690;&#x53D8;&#x91CF;&#x7EC4;&#x5206;&#x5E03;&#x6536;&#x655B;&#x3002;&#x6982;&#x7387;&#x56FE;&#x5982;&#x4E0B;&#xFF1A;</p>
+<div style="width:100%;text-align:center">
+    <img src="assets/variational_EM_pgm.jpg" alt="PGM for variational EM" width="400">
+</div>
+
+<h2 id="vae">VAE</h2>
+<p>&#x53D8;&#x5206;&#x81EA;&#x7F16;&#x7801;&#x5668;&#xFF08;Variational Auto Encoder&#xFF09;&#x4E5F;&#x662F;&#x9690;&#x53D8;&#x91CF;&#x7684;intractability&#x5E26;&#x6765;&#x7684;&#xFF0C;&#x4E0D;&#x540C;&#x4E4B;&#x5904;&#x662F;VAE&#x8FDB;&#x4E00;&#x6B65;&#x5047;&#x8BBE;&#xFF0C;<script type="math/tex; ">p_\theta(x, z), p_{\theta}(z|x)</script>&#x90FD;&#x662F;intractable&#x7684;&#xFF0C;&#x4E14;&#x53D8;&#x5206;&#x5C06;<script type="math/tex; ">z</script>&#x5206;&#x7EC4;&#x4E5F;&#x4E0D;&#x80FD;&#x4F7F;&#x5F97;&#x5206;&#x5E03;&#x53D8;&#x4E3A;tractable&#x7684;&#xFF0C;&#x8FD9;&#x6837;&#x7684;&#x60C5;&#x5F62;&#x662F;&#x5B58;&#x5728;&#x7684;&#xFF0C;&#x6BD4;&#x5982;&#x975E;&#x7EBF;&#x6027;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x3002;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x66F4;&#x597D;&#x7684;&#x53D8;&#x5206;&#x65B9;&#x5F0F;&#x6765;&#x8FD1;&#x4F3C;<script type="math/tex; ">p_\theta(z|x)</script>&#x3002;VAE&#x63D0;&#x51FA;&#x7684;&#x65B9;&#x6848;&#x662F;&#x7528;&#x4E00;&#x4E2A;&#x7531;<script type="math/tex; ">\phi</script>&#x63A7;&#x5236;&#x7684;&#x5206;&#x5E03;<script type="math/tex; ">q_\phi(z|x)</script>&#xFF1A;</p>
+<p><script type="math/tex; mode=display">
+\begin{align}
+\tag{3}
+\hat{\mathcal{L}} (\theta, \phi; \mathbf{X}) &= \sum_{x\in\mathcal{X}}\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x, z)-\log q_\phi(z|x)]\\
+&= \sum_{x\in\mathcal{X}}\sum_{z\in\mathcal{Z}}q_\phi(z|x)\left\{\log p_\theta(x|z)+\log p_\theta(z)-\log q_\phi(z|x)\right\} \\
+\tag{5}
+& = \sum_{x\in\mathcal{X}}\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - \text{KL}\left[q_\phi(z|x)\Vert p_\theta(z)\right]
+\end{align}
+</script></p>
+<p>&#x5176;&#x4E2D;<script type="math/tex; ">q_\phi(z|x)</script>&#x88AB;&#x7406;&#x89E3;&#x4E3A;&#x7F16;&#x7801;&#x5668;&#xFF08;Encoder&#xFF09;&#xFF0C;&#x5C06;&#x89C2;&#x6D4B;&#x6837;&#x672C;&#x6620;&#x5C04;&#x5230;&#x9690;&#x53D8;&#x91CF;&#x7A7A;&#x95F4;<script type="math/tex; ">\mathcal{Z}</script>&#xFF0C;<script type="math/tex; ">p_\theta(x|z)</script>&#x4E3A;&#x89E3;&#x7801;&#x5668;&#xFF0C;&#x5C06;&#x9690;&#x53D8;&#x91CF;&#x6620;&#x5C04;&#x56DE;&#x89C2;&#x6D4B;&#x6837;&#x672C;&#x7A7A;&#x95F4;<script type="math/tex; ">\mathcal{X}</script>&#x3002;</p>
+<p>&#x6211;&#x4EEC;&#x8981;&#x4F18;&#x5316;<script type="math/tex; ">\hat{\mathcal{L}}</script>&#x9700;&#x8981;&#x5BF9;<script type="math/tex; ">\theta</script>&#x548C;<script type="math/tex; ">\phi</script>&#x6C42;&#x5BFC;&#xFF0C;&#x5176;&#x4E2D;&#x5BF9;<script type="math/tex; ">\phi</script>&#x6C42;&#x5BFC;&#x56E0;&#x4E3A;&#x671F;&#x671B;&#x7684;&#x5B58;&#x5728;&#x6709;&#x51E0;&#x79CD;&#x5904;&#x7406;&#x65B9;&#x5F0F;&#x3002;&#x8FD9;&#x91CC;&#x770B;&#x5230;<script type="math/tex; ">\hat{\mathcal{L}}</script>&#x6709;<script type="math/tex; ">(3)</script>&#x548C;<script type="math/tex; ">(5)</script>&#x4E24;&#x79CD;&#x8868;&#x793A;&#xFF0C;&#x5176;&#x5BF9;<script type="math/tex; ">\phi</script>&#x6C42;&#x5BFC;&#x6709;&#x4E9B;&#x95EE;&#x9898;&#x3002;</p>
+<h3 id="monte-carlo-gradient-estimator">Monte Carlo gradient estimator</h3>
+<p>&#x4E00;&#x822C;&#x671F;&#x671B;&#x5BF9;&#x4E8E;&#x5206;&#x5E03;&#x7684;&#x53C2;&#x6570;&#x6C42;&#x5BFC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x4E0B;&#x9762;&#x7684;&#x8FD1;&#x4F3C;</p>
+<p><script type="math/tex; mode=display">
+\begin{align}
+\nabla_\phi\mathbb{E}_{q_\phi(z)}[f(z)] &= \int f(z) \nabla_\phi q_\phi(z) dz \\
+&=\int f(z) q_\phi(z) \frac{\nabla_\phi q_\phi(z)}{q_\phi(z)} dz\\
+&=\int f(z)q_\phi(z)\nabla_\phi\log q_\phi(z) dz\\
+&=\mathbb{E}_{q_\phi(z)}[f(z)\nabla_\phi\log q_\phi(z)] \\
+&\simeq \frac{1}{L}\sum_{l=1}^{L}f(z^{(l)})\nabla_\phi\log q_\phi(z^{(l)})
+\end{align}
+</script></p>
+<p>&#x4F46;&#x662F;&#x8FD9;&#x6837;&#x5F97;&#x5230;&#x7684;&#x8FD1;&#x4F3C;&#x65B9;&#x5DEE;&#x5F88;&#x5927;&#xFF0C;&#x9700;&#x8981;&#x8F83;&#x5927;&#x7684;<script type="math/tex; ">L</script>&#x6765;&#x4FDD;&#x8BC1;&#x4E00;&#x4E2A;&#x5F88;&#x597D;&#x7684;&#x68AF;&#x5EA6;&#x4F30;&#x8BA1;&#xFF08;&#x8BE6;&#x89C1;<a href="https://icml.cc/2012/papers/687.pdf" target="_blank">&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;</a>&#xFF09;&#x3002;&#x5728;<script type="math/tex; ">(3)</script>&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7528;&#x7C7B;&#x4F3C;&#x7684;&#x65B9;&#x5F0F;&#x5F97;&#x5230;<script type="math/tex; ">\hat{\mathcal{L}}</script>&#x5BF9;<script type="math/tex; ">\phi</script>&#x7684;&#x5BFC;&#x6570;&#xFF0C;&#x4F46;&#x662F;&#x8F83;&#x5927;&#x7684;<script type="math/tex; ">L</script>&#x4F7F;&#x5F97;&#x6BCF;&#x4E2A;&#x6837;&#x672C;&#x7684;&#x91C7;&#x6837;&#x4EE3;&#x4EF7;&#x9AD8;&#xFF0C;&#x56E0;&#x6B64;&#x5728;&#x5927;&#x6570;&#x636E;&#x96C6;&#x4E0A;&#x6CA1;&#x6709;&#x529E;&#x6CD5;&#x5E94;&#x7528;&#x3002;</p>
+<h3 id="reparameterization-trick-sgvb-estimator">Reparameterization trick (SGVB estimator)</h3>
+<p>&#x5BF9;&#x4E8E;&#x5F0F;<script type="math/tex; ">(3)</script>&#x4E2D;&#x7684;&#x671F;&#x671B;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x5BF9;<script type="math/tex; ">z</script>&#x8282;&#x70B9;&#x8FDB;&#x884C;&#x91C7;&#x6837;&#x8FD1;&#x4F3C;&#x4EE5;&#x540E;&#xFF0C;&#x518D;&#x7B97;&#x5BF9;<script type="math/tex; ">\phi</script>&#x7684;&#x5BFC;&#x6570;&#x4F1A;&#x5F97;&#x5230;&#x4E0D;&#x6B63;&#x786E;&#x7684;&#x7ED3;&#x679C;&#xFF0C;&#x56E0;&#x4E3A;&#x91C7;&#x6837;&#x7684;&#x5206;&#x5E03;<script type="math/tex; ">q_\phi(z|x)</script>&#x662F;&#x4F9D;&#x8D56;<script type="math/tex; ">\phi</script>&#x7684;&#xFF0C;&#x6982;&#x7387;&#x56FE;&#x5982;&#x4E0B;&#xFF1A;</p>
+<div style="width:100%;text-align:center">
+    <img src="assets/VAE_pgm.jpg" alt="VAE probablisitc graphical model" width="300">
+</div>
+
+<p>Reparameterization&#x5C06;&#x968F;&#x673A;&#x6027;&#x7684;&#x6765;&#x6E90;&#x4ECE;<script type="math/tex; ">z</script>&#x8F6C;&#x79FB;&#x5230;&#x53E6;&#x4E00;&#x4E2A;&#x8F85;&#x52A9;&#x7684;&#x566A;&#x58F0;&#x53D8;&#x91CF;<script type="math/tex; ">\epsilon</script>&#xFF0C;&#x5047;&#x8BBE;<script type="math/tex; ">z=g_\phi(\epsilon, x)</script>&#xFF0C;&#x5176;&#x4E2D;<script type="math/tex; ">\epsilon\sim p(\epsilon)</script>&#xFF0C;<script type="math/tex; ">(3)</script>&#x5F0F;&#x53D8;&#x4E3A;</p>
+<p><script type="math/tex; mode=display">
+\begin{align}
+\hat{\mathcal{L}}{}^A(\phi, \theta;\mathbf{X}) &= \sum_{x\in\mathcal{X}}\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x, z)-\log q_\phi(z|x)] \\
+&=\sum_{x\in\mathcal{X}}\mathbb{E}_{p(\epsilon)}[\log p_\theta(x, g_\phi(\epsilon, x))-\log q_\phi(g_\phi(\epsilon, x)|x)]\\
+&\simeq \sum_{x\in\mathcal{X}}\frac{1}{L}\log p_\theta(x, g_\phi(\epsilon^{(l)}, x))-\log q_\phi(g_\phi(\epsilon^{(l)}, x)|x)
+\end{align}
+</script></p>
+<p>&#x8FD9;&#x6837;&#x7684;&#x8FD1;&#x4F3C;&#x6BD4;MC&#x68AF;&#x5EA6;&#x8FD1;&#x4F3C;&#x6709;&#x66F4;&#x5C0F;&#x7684;&#x65B9;&#x5DEE;&#xFF0C;&#x4E14;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5BF9;&#x635F;&#x5931;&#x51FD;&#x6570;&#x8FDB;&#x884C;&#x8FD1;&#x4F3C;&#x3002;SGVB&#x7684;&#x6982;&#x7387;&#x56FE;&#x5982;&#x4E0B;&#xFF1A;</p>
+<div style="width:100%;text-align:center">
+    <img src="assets/SGVB_pgm.jpg" alt="VAE probablisitc graphical model" width="300">
+</div>
+
+<h3 id="second-version-sgvb-estimator">Second Version SGVB estimator</h3>
+<p><script type="math/tex; ">(3)</script>&#x5F0F;&#x53EF;&#x4EE5;&#x5316;&#x7B80;&#x4E3A;<script type="math/tex; ">(5)</script>&#x5F0F;&#xFF0C;&#x82E5;<script type="math/tex; ">(5)</script>&#x5F0F;&#x4E2D;&#x7684;KL&#x6563;&#x5EA6;&#x9879;&#x53EF;&#x4EE5;&#x79EF;&#x5206;&#xFF08;tractable&#xFF09;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x53EA;&#x5BF9;<script type="math/tex; ">(5)</script>&#x5F0F;&#x4E2D;&#x7684;&#x7B2C;&#x4E00;&#x9879;&#x8FDB;&#x884C;&#x91C7;&#x6837;&#x8FD1;&#x4F3C;&#xFF0C;&#x76F8;&#x6BD4;&#x4E8E;&#x6700;&#x539F;&#x59CB;&#x7684;SGVB&#x4F30;&#x8BA1;&#x5B50;&#xFF0C;&#x56E0;&#x4E3A;&#x53EA;&#x5BF9;&#x53D8;&#x5206;&#x4E0B;&#x754C;<script type="math/tex; ">\hat{\mathcal{L}}</script>&#x7684;&#x4E00;&#x90E8;&#x5206;&#x8FD1;&#x4F3C;&#xFF0C;&#x65B9;&#x5DEE;&#x4F1A;&#x66F4;&#x5C0F;&#xFF1A;</p>
+<p><script type="math/tex; mode=display">
+\hat{\mathcal{L}}{}^B(\phi, \theta; \mathbf{X}) = -\text{KL}\left[q_\phi(z|x)\Vert p_\theta(z)\right] + \frac{1}{L}\sum_{l=1}^L\log p_\theta\left(x\middle|g_\phi(\epsilon^{(l)}, x)\right)
+</script></p>
+<p>&#x6700;&#x540E;&#xFF0C;&#x6574;&#x4E2A;VAE&#x7684;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<div style="width:100%;text-align:center">
+    <img src="assets/VAE_flowchart.jpg" alt="VAE probablisitc graphical model" width="1200">
+</div>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: 贝叶斯">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../ce/" class="navigation navigation-next " aria-label="Next page: 聚集不等式">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"隐变量，EM算法，变分方法，VAE","level":"1.3.1","depth":2,"next":{"title":"聚集不等式","level":"1.4","depth":1,"path":"ce/README.md","ref":"ce/README.md","articles":[{"title":"Markov, Chebyshev and Chernoff","level":"1.4.1","depth":2,"path":"ce/markov.md","ref":"ce/markov.md","articles":[]},{"title":"Sub-Gaussian and Sub-Gamma","level":"1.4.2","depth":2,"path":"ce/sub_gauss_gamma.md","ref":"ce/sub_gauss_gamma.md","articles":[]}]},"previous":{"title":"贝叶斯","level":"1.3","depth":1,"path":"bayes/README.md","ref":"bayes/README.md","articles":[{"title":"隐变量，EM算法，变分方法，VAE","level":"1.3.1","depth":2,"path":"bayes/hidden_var.md","ref":"bayes/hidden_var.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["mathjax"],"pluginsConfig":{"mathjax":{"forceSVG":false,"version":"2.6-latest"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"bayes/hidden_var.md","mtime":"2019-06-20T07:23:32.800Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-20T07:23:34.039Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

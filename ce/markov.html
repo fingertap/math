@@ -1,0 +1,383 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Markov, Chebyshev and Chernoff · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="sub_gauss_gamma.html" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../optimization/">
+            
+                <a href="../optimization/">
+            
+                    
+                    优化
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../optimization/grad_conv.html">
+            
+                <a href="../optimization/grad_conv.html">
+            
+                    
+                    Gradient Descent Convergence Analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../bayes/">
+            
+                <a href="../bayes/">
+            
+                    
+                    贝叶斯
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../bayes/hidden_var.html">
+            
+                <a href="../bayes/hidden_var.html">
+            
+                    
+                    隐变量，EM算法，变分方法，VAE
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    聚集不等式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.4.1" data-path="markov.html">
+            
+                <a href="markov.html">
+            
+                    
+                    Markov, Chebyshev and Chernoff
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="sub_gauss_gamma.html">
+            
+                <a href="sub_gauss_gamma.html">
+            
+                    
+                    Sub-Gaussian and Sub-Gamma
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Markov, Chebyshev and Chernoff</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="markov-chebyshev-and-chernoff&#x4E0D;&#x7B49;&#x5F0F;">Markov, Chebyshev and Chernoff&#x4E0D;&#x7B49;&#x5F0F;</h1>
+<p>&#x540E;&#x4E24;&#x4E2A;&#x90FD;&#x662F;Markov&apos;s bound&#x7684;&#x63A8;&#x5E7F;&#x3002;</p>
+<h2 id="markov&#x4E0D;&#x7B49;&#x5F0F;">Markov&#x4E0D;&#x7B49;&#x5F0F;</h2>
+<p>&#x5047;&#x8BBE;&#x968F;&#x673A;&#x53D8;&#x91CF;<script type="math/tex; ">Y>0</script>&#xFF0C;&#x5219;<script type="math/tex; ">\forall\lambda >0</script>&#x6211;&#x4EEC;&#x6709;
+<script type="math/tex; mode=display">
+\tag{Markov's inequality}
+P\{Y\geq t\}\leq \frac{\mathbb{E}Y}{t}
+</script>
+&#x8BC1;&#x660E;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#xFF1A;
+<script type="math/tex; mode=display">
+\frac{\mathbb{E}Y}{t}=\frac{\mathbb{E}[Y\mathbf{1}_{\{Y\leq t\}}] + \mathbb{E}[Y\mathbf{1}_{\{Y\geq t\}}]}{t} \geq \frac{\mathbb{E}[Y\mathbf{1}_{\{Y\geq t\}}]}{t} \geq \frac{\mathbb{E}[t\mathbf{1}_{\{Y\leq t\}}]}{t}=P\{Y\geq t\}
+</script></p>
+<h2 id="chebyshev&#x4E0D;&#x7B49;&#x5F0F;">Chebyshev&#x4E0D;&#x7B49;&#x5F0F;</h2>
+<p>&#x5728;Markov&#x4E0D;&#x7B49;&#x5F0F;&#x4E2D;&#xFF0C;&#x53EF;&#x4EE5;&#x589E;&#x5927;&#x96C6;&#x5408;<script type="math/tex; ">\{Y\geq t\}</script>&#x518D;&#x5229;&#x7528;Markov&#x4E0D;&#x7B49;&#x5F0F;&#x3002;&#x4E00;&#x79CD;&#x65B9;&#x5F0F;&#x662F;&#x901A;&#x8FC7;&#x5BF9;<script type="math/tex; ">Y</script>&#x548C;<script type="math/tex; ">t</script>&#x65BD;&#x52A0;&#x4E00;&#x4E2A;&#x975E;&#x8D1F;&#x4E0D;&#x51CF;&#x7684;&#x51FD;&#x6570;<script type="math/tex; ">\phi</script>&#x3002;&#x53D6;<script type="math/tex; ">Z=|Y-\mathbb{E}Y|</script>&#xFF0C;<script type="math/tex; ">\phi(x)=x^2</script>&#x6709;Chebyshev&#x4E0D;&#x7B49;&#x5F0F;&#xFF1A;
+<script type="math/tex; mode=display">
+\tag{Chebyshev's inequality}
+P\{|Y-\mathbb{E}Y|\geq t\} \leq \frac{Var(Y)}{t^2}.
+</script></p>
+<h2 id="chernoff&#x4E0D;&#x7B49;&#x5F0F;">Chernoff&#x4E0D;&#x7B49;&#x5F0F;</h2>
+<p>&#x5728;Markov&#x4E0D;&#x7B49;&#x5F0F;&#x4E2D;&#xFF0C;&#x53D6;<script type="math/tex; ">\phi(x)=e^{\lambda x}</script>&#xFF0C;&#x5176;&#x4E2D;<script type="math/tex; ">\lambda > 0</script>&#xFF0C;&#x6709;
+<script type="math/tex; mode=display">
+\tag{Chernoff's inequality}
+P\{Y\geq t\} \leq \inf_{\lambda \geq 0}\frac{\mathbb{E}[e^{\lambda Y}]}{e^{\lambda t}}
+</script>
+&#x56E0;&#x4E3A;<script type="math/tex; ">P\{Y\geq t\}=P\{e^{\lambda Y}\geq e^{\lambda t}\}, \forall Y \in \mathbb{R}</script>&#xFF0C;&#x6240;&#x4EE5;Chernoff&#x4E0D;&#x7B49;&#x5F0F;&#x4E2D;<script type="math/tex; ">Y</script>&#x662F;&#x53EF;&#x4EE5;&#x53D6;&#x6574;&#x4E2A;&#x5B9E;&#x6570;&#x57DF;&#x7684;&#x3002;</p>
+<p>&#x6CE8;&#x610F;&#x53F3;&#x4FA7;&#x51FA;&#x73B0;&#x4E86;&#x77E9;&#x6BCD;&#x51FD;&#x6570;<script type="math/tex; ">\mathbb{E}[e^{\lambda Y}]</script>&#xFF0C;&#x56E0;&#x4E3A;&#x6709;&#x5BF9;&#x6570;&#x77E9;&#x6BCD;&#x51FD;&#x6570;&#x6709;&#x7EBF;&#x6027;&#x6027;&#x8D28;&#xFF0C;&#x6211;&#x4EEC;&#x6709;&#x65F6;&#x5019;&#x4F1A;&#x5BF9;&#x53F3;&#x4FA7;&#x53D6;&#x5BF9;&#x6570;&#x518D;&#x53D6;&#x6307;&#x6570;&#xFF0C;&#x4EE5;&#x9020;&#x51FA;&#x5BF9;&#x6570;&#x77E9;&#x6BCD;&#x51FD;&#x6570;<script type="math/tex; ">\log \mathbb{E}[e^{\lambda Y}]</script>&#xFF1A;
+<script type="math/tex; mode=display">
+\begin{aligned}
+\frac{\mathbb{E}[e^{\lambda Y}]}{e^{\lambda t}} &= \exp\left\{-\psi^\star_Y(t)\right\},
+\end{aligned}
+</script>
+&#x5176;&#x4E2D;<em>&#x514B;&#x83B1;&#x9ED8;&#x53D8;&#x6362;</em> <script type="math/tex; ">\psi^\star_Y(t) =\sup_{\lambda\geq 0}(\lambda t - \log \mathbb{E}[e^{\lambda Y}])</script> &#x4E2D;&#x51FA;&#x73B0;&#x4E86;&#x5BF9;&#x6570;&#x77E9;&#x6BCD;&#x3002;</p>
+<p>&#x5F53;<script type="math/tex; ">t>\mathbb{E}Y</script>&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5C06;&#x5BF9;<script type="math/tex; ">\lambda</script>&#x6C42;&#x6700;&#x503C;&#x7684;&#x8303;&#x56F4;&#x4ECE;&#x975E;&#x8D1F;&#x6570;&#x6269;&#x5C55;&#x5230;&#x6574;&#x4E2A;&#x5B9E;&#x6570;&#xFF0C;&#x56E0;&#x4E3A;&#x6B64;&#x65F6;&#x5F53;<script type="math/tex; ">\lambda<0</script>&#x6709;
+<script type="math/tex; mode=display">
+\frac{\mathbb{E}[e^{\lambda Y}]}{e^{\lambda t}} \geq e^{\lambda\left(\mathbb{E}Y-t\right)}>1
+</script>
+&#x662F;&#x6052;&#x5927;&#x4E8E;&#x5DE6;&#x8FB9;&#x7684;&#x6982;&#x7387;&#x7684;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: 聚集不等式">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="sub_gauss_gamma.html" class="navigation navigation-next " aria-label="Next page: Sub-Gaussian and Sub-Gamma">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Markov, Chebyshev and Chernoff","level":"1.4.1","depth":2,"next":{"title":"Sub-Gaussian and Sub-Gamma","level":"1.4.2","depth":2,"path":"ce/sub_gauss_gamma.md","ref":"ce/sub_gauss_gamma.md","articles":[]},"previous":{"title":"聚集不等式","level":"1.4","depth":1,"path":"ce/README.md","ref":"ce/README.md","articles":[{"title":"Markov, Chebyshev and Chernoff","level":"1.4.1","depth":2,"path":"ce/markov.md","ref":"ce/markov.md","articles":[]},{"title":"Sub-Gaussian and Sub-Gamma","level":"1.4.2","depth":2,"path":"ce/sub_gauss_gamma.md","ref":"ce/sub_gauss_gamma.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["mathjax"],"pluginsConfig":{"mathjax":{"forceSVG":false,"version":"2.6-latest"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ce/markov.md","mtime":"2019-06-20T07:23:32.801Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-20T07:23:34.039Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

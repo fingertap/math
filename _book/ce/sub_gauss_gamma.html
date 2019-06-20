@@ -1,0 +1,374 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Sub-Gaussian and Sub-Gamma · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="markov.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../optimization/">
+            
+                <a href="../optimization/">
+            
+                    
+                    优化
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../optimization/grad_conv.html">
+            
+                <a href="../optimization/grad_conv.html">
+            
+                    
+                    Gradient Descent Convergence Analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../bayes/">
+            
+                <a href="../bayes/">
+            
+                    
+                    贝叶斯
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../bayes/hidden_var.html">
+            
+                <a href="../bayes/hidden_var.html">
+            
+                    
+                    隐变量，EM算法，变分方法，VAE
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    聚集不等式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="markov.html">
+            
+                <a href="markov.html">
+            
+                    
+                    Markov, Chebyshev and Chernoff
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.2" data-path="sub_gauss_gamma.html">
+            
+                <a href="sub_gauss_gamma.html">
+            
+                    
+                    Sub-Gaussian and Sub-Gamma
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Sub-Gaussian and Sub-Gamma</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="sub-gaussian-and-sub-gamma-variable">Sub-Gaussian and Sub-Gamma Variable</h1>
+<p>&#x6B21;&#x9AD8;&#x65AF;&#x53D8;&#x91CF;&#x662F;&#x4E00;&#x7C7B;&#x4ECE;&#x5C5E;&#x4E8E;&#x9AD8;&#x65AF;&#x53D8;&#x91CF;&#x7684;&#x968F;&#x673A;&#x53D8;&#x91CF;&#xFF0C;&#x9AD8;&#x65AF;&#x53D8;&#x91CF;&#x7684;&#x8BB8;&#x591A;&#x6027;&#x8D28;&#x5728;&#x6B21;&#x9AD8;&#x65AF;&#x4E0A;&#x4E5F;&#x4E3A;&#x771F;&#x3002;Gamma&#x53D8;&#x91CF;&#x7C7B;&#x4F3C;&#x3002;</p>
+<p>&#x4E00;&#x4E2A;&#x6BD4;&#x8F83;&#x597D;&#x7684;&#x6B21;&#x9AD8;&#x65AF;&#x53D8;&#x91CF;&#x7684;note&#x53EF;&#x4EE5;&#x5728;<a href="https://sites.ualberta.ca/~omarr/publications/subgaussians.pdf" target="_blank">&#x8FD9;&#x91CC;</a>&#x627E;&#x5230;&#x3002;</p>
+<h2 id="sub-gaussian">Sub-Gaussian</h2>
+<h3 id="&#x5B9A;&#x4E49;">&#x5B9A;&#x4E49;</h3>
+<p>&#x4E00;&#x4E2A;&#x5B9E;&#x53D8;&#x91CF;<script type="math/tex; ">Y</script>&#x88AB;&#x79F0;&#x4E3A;<script type="math/tex; ">v</script>-subgaussian&#xFF0C;&#x82E5;<script type="math/tex; ">\forall \lambda \in \mathbb{R}</script>&#xFF0C;&#x77E9;&#x6BCD;&#x51FD;&#x6570;&#x88AB;&#x9AD8;&#x65AF;&#x77E9;&#x6BCD;&#x51FD;&#x6570;&#x63A7;&#x5236;
+<script type="math/tex; mode=display">
+\tag{Sub-Gaussian}
+\mathbb{E}[e^{\lambda Y}] \leq e^{\lambda^2v^2/2}.
+</script></p>
+<h3 id="&#x6027;&#x8D28;">&#x6027;&#x8D28;</h3>
+<h4 id="&#x7C7B;&#x9AD8;&#x65AF;&#x77E9;">&#x7C7B;&#x9AD8;&#x65AF;&#x77E9;</h4>
+<p>&#x82E5;<script type="math/tex; ">Y</script>&#x4E3A;<script type="math/tex; ">v</script>-subgaussian&#xFF0C;&#x5219;<script type="math/tex; ">\mathbb{E}Y=0</script>&#xFF0C;&#x4E14;<script type="math/tex; ">Var(Y)\leq b^2</script>&#x3002;</p>
+<p><strong>&#x8BC1;&#x660E;</strong>&#xFF1A;
+&#x5BF9;<script type="math/tex; ">\lambda\in\mathbb{R}</script>&#xFF0C;&#x5728;<script type="math/tex; ">(\text{Sub-Gaussian})</script>&#x5F0F;&#x4E24;&#x4FA7;&#x5BF9;&#x6307;&#x6570;&#x51FD;&#x6570;<script type="math/tex; ">e^x</script>&#x6CF0;&#x52D2;&#x5C55;&#x5F00;</p>
+<p><script type="math/tex; mode=display">
+\sum_{n=0}^\infty\frac{\lambda^n}{n!}\mathbb{E}[Y^n]=\mathbb{E}[e^{\lambda Y}]\leq e^{v^2\lambda^2/2} = \sum_{n=0}^\infty\left(\frac{v^2\lambda^2}{2}\right)^n\cdot\frac{1}{n!}
+</script></p>
+<p>&#x5E38;&#x6570;1&#x88AB;&#x62B5;&#x6D88;&#xFF0C;&#x5DE6;&#x8FB9;&#x53D6;&#x524D;&#x4E24;&#x9879;&#xFF1A;</p>
+<p><script type="math/tex; mode=display">
+\lambda\cdot\mathbb{E}Y+\mathbb{E}[Y^2]\frac{\lambda^2}{2} \leq \sum_{n=1}^\infty\left(\frac{v^2\lambda^2}{2}\right)^n\cdot\frac{1}{n!}
+</script></p>
+<p>&#x4E24;&#x8FB9;&#x9664;&#x4EE5;&#x5927;&#x4E8E;&#x96F6;&#x7684;<script type="math/tex; ">\lambda</script>&#xFF0C;&#x5E76;&#x4EE4;<script type="math/tex; ">\lambda\rightarrow 0</script>&#x6709;<script type="math/tex; ">\mathbb{E}Y\leq 0</script>&#xFF1B;&#x5BF9;<script type="math/tex; ">\lambda<0</script>&#x7C7B;&#x4F3C;&#x6709;<script type="math/tex; ">\mathbb{E}Y\geq 0</script>&#xFF0C;&#x56E0;&#x6B64;<script type="math/tex; ">\mathbb{E}Y=0</script>&#x3002;&#x4EE3;&#x5165;<script type="math/tex; ">\mathbb{E}Y=0</script>&#xFF0C;&#x518D;&#x9664;&#x4EE5;<script type="math/tex; ">\lambda^2\rightarrow 0</script>&#xFF0C;&#x6709;<script type="math/tex; ">\mathbb{E}[Y^2]\leq v^2</script>&#x3002;</p>
+<h4 id="&#x7EBF;&#x6027;">&#x7EBF;&#x6027;</h4>
+<p>&#x82E5;<script type="math/tex; ">Y</script>&#x4E3A;<script type="math/tex; ">v</script>-subgaussian&#xFF0C;&#x5219;<script type="math/tex; ">\forall \alpha\in\mathbb{R}</script>&#xFF0C;<script type="math/tex; ">\alpha Y</script>&#x662F;<script type="math/tex; ">|\alpha|v</script>-subgaussian&#x7684;&#x3002;&#x82E5;<script type="math/tex; ">Y_1, Y_2</script>&#x5206;&#x522B;&#x4E3A;<script type="math/tex; ">v_1, v_2</script>-subgaussian&#xFF0C;&#x5219;<script type="math/tex; ">Y_1+Y_2</script>&#x4E3A;<script type="math/tex; ">(v_1+v_2)</script>-subgaussian&#x3002;</p>
+<p>&#x5229;&#x7528;&#x5B9A;&#x4E49;&#x53EF;&#x4EE5;&#x5BB9;&#x6613;&#x5730;&#x9A8C;&#x8BC1;&#x3002;</p>
+<h3 id="&#x523B;&#x753B;">&#x523B;&#x753B;</h3>
+<p>&#x4E0B;&#x9762;&#x4E09;&#x79CD;&#x5BF9;Sub-Gaussian&#x53D8;&#x91CF;&#x7684;&#x523B;&#x753B;&#x7B49;&#x4EF7;&#xFF1A;</p>
+<ul>
+<li>Laplace transform (moment generating function) condition: <script type="math/tex; ">\exists v>0, \forall \lambda \in \mathbb{R}</script>&#xFF0C;&#x4F7F;&#x5F97;<script type="math/tex; ">\mathbb{E}[e^{\lambda Y}]\leq e^{v^2t^2/2}</script>&#xFF1B;</li>
+<li>Subgaussian tail: <script type="math/tex; ">\exists c>0, \forall t > 0</script>&#xFF0C;<script type="math/tex; ">p(|Y|\geq t)\leq 2e^{-ct^2}</script>&#xFF1B;</li>
+<li><script type="math/tex; ">\psi_2</script>-condition: <script type="math/tex; ">\exists a > 0</script>&#xFF0C; <script type="math/tex; ">\mathbb{E}[e^{aY^2}]\leq 2</script>.</li>
+</ul>
+<p>&#x8BC1;&#x660E;&#x89C1;<a href="https://sites.ualberta.ca/~omarr/publications/subgaussians.pdf" target="_blank">&#x8FD9;&#x91CC;</a>&#x3002;&#x76F4;&#x89C2;&#x7406;&#x89E3;&#x5C31;&#x662F;&#x8BF4;&#x6BD4;&#x9AD8;&#x65AF;&#x53D8;&#x91CF;&#x8981;&#x66F4;&#x805A;&#x96C6;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="markov.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Markov, Chebyshev and Chernoff">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Sub-Gaussian and Sub-Gamma","level":"1.4.2","depth":2,"previous":{"title":"Markov, Chebyshev and Chernoff","level":"1.4.1","depth":2,"path":"ce/markov.md","ref":"ce/markov.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["mathjax"],"pluginsConfig":{"mathjax":{"forceSVG":false,"version":"2.6-latest"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ce/sub_gauss_gamma.md","mtime":"2019-06-20T07:23:32.801Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-20T07:23:34.039Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
